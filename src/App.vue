@@ -1,30 +1,43 @@
-<script setup>
-import HelloWorld from './components/HelloWorld.vue'
-</script>
-
 <template>
-  <div>
-    <a href="https://vitejs.dev" target="_blank">
-      <img src="/vite.svg" class="logo" alt="Vite logo" />
-    </a>
-    <a href="https://vuejs.org/" target="_blank">
-      <img src="./assets/vue.svg" class="logo vue" alt="Vue logo" />
-    </a>
+  <div class="app">
+    <img
+      class="fit-picture"
+      src="./assets/weather.svg"
+      alt="Grapefruit slice atop a pile of other slices"
+      :style="{ height: '100px' }"
+    />
+    <main>
+      <AppNavigation class="navigate" />
+      <router-view></router-view>
+    </main>
   </div>
-  <HelloWorld msg="Vite + Vue" />
 </template>
 
-<style scoped>
-.logo {
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
-  transition: filter 300ms;
+<script setup>
+import AppNavigation from "./components/AppNavigation.vue";
+</script>
+
+<style lang="scss" scoped>
+.app {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
 }
-.logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
-}
-.logo.vue:hover {
-  filter: drop-shadow(0 0 2em #42b883aa);
+
+main {
+  position: relative;
+  margin-top: 50px;
+  display: flex;
+  flex: 1;
+  padding: 15px;
+  background: #fff;
+  box-shadow: 0px 0px 20px #5c4f4f;
+  border-radius: 0 10px 10px 10px;
+  .navigate {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 100%;
+  }
 }
 </style>

@@ -1,0 +1,26 @@
+@import url('./reset.css');
+@import url('vue-multiselect/dist/vue-multiselect.css');
+
+* {
+  box-sizing:border-box;
+}
+
+html{
+  background-color: #49b7e9;
+  height: 100vh;
+}
+
+body {
+  margin: 0;
+  padding: 15px;
+  place-items: center;
+  min-width: 290px;
+  height: 100%;
+}
+
+#app {
+  max-width: 1200px;
+  width: 100%;
+  margin: 0 auto;
+  height: 100%;
+}

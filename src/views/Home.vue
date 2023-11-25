@@ -1,11 +1,14 @@
 <template>
   <div class="page">
-    <div class="input_button">
-      <div class="wrap">
-        <AppAutocompleteCity @selected="setSelectedCity" />
+    <div class="input_button_wrap">
+      <div class="input_button">
+        <div class="wrap">
+          <AppAutocompleteCity @selected="setSelectedCity" />
+        </div>
+        <div class="wrap"><button>В обране</button></div>
       </div>
-      <div class="wrap"><button>В обране</button></div>
     </div>
+
     <AppTabs v-if="items.length" @selected="selected">
       <template v-slot:title>
         <h2>{{ city }}</h2>
@@ -92,18 +95,24 @@ async function getData(item) {
   flex-direction: column;
   justify-content: space-between;
 }
+
+.input_button_wrap {
+  padding: 0 7px;
+}
 .input_button {
   display: flex;
   justify-content: space-between;
   flex-wrap: wrap;
+  margin: 0 -15px;
   margin-bottom: 10px;
 
   .wrap {
     display: flex;
     width: auto;
-    margin-bottom: 10px;
     align-items: center;
     align-content: center;
+    margin: 0 7px;
+    margin-bottom: 10px;
     &:first-child {
       flex: 1;
       max-width: 500px;

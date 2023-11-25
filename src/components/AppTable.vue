@@ -5,14 +5,20 @@
         <tr v-for="data of header" :key="`header-${data.key}`">
           <td>{{ data.value }}</td>
           <td v-for="item of items" :key="`weather-${item.hour}`">
-            <span v-if="data.key !== 'icon'">{{
-              `${item[`${data.key}`]}`
+            <span v-if="data.key === 'icon'">
+              <img width="35" :src="getImageUrl(item.icon)" />
+            </span>
+            <span v-else-if="data.key == 'temp' || data.key == 'feels_like'">{{
+              `${item[data.key]}&#176; С`
             }}</span>
-            <img v-else width="35" :src="getImageUrl(item.icon)" />
-
-            <span v-if="data.key == 'temp' || data.key == 'feels_like'"
-              >&#176; С</span
+            <div
+              class="wind_deg"
+              v-else-if="data.key === 'wind_deg'"
+              :style="`transform: rotate(${item[data.key]}deg)`"
             >
+              <img width="15" src="../assets//svg/wind.deg.svg" />
+            </div>
+            <span v-else>{{ item[data.key] }}</span>
           </td>
         </tr>
       </tbody>
@@ -60,5 +66,13 @@ tbody tr {
 
 table {
   background-color: #dbf1fb;
+}
+.wind_deg {
+  // border-radius: 50%;
+  // background: #fff;
+  // overflow: hidden;
+  // width: 15px;
+  // height: 15px;
+  // font-size: 10px;
 }
 </style>

@@ -1,31 +1,45 @@
 <template>
   <div class="component">
-    <LineChart :height="250" v-bind="barChartProps" />
+    <canvas :height="80" ref="appChart"></canvas>
   </div>
 </template>
 
 <script setup>
-import { Chart, registerables } from "chart.js";
-import { useBarChart, LineChart } from "vue-chart-3";
-Chart.register(...registerables);
-import { ref, defineProps, computed } from "vue";
+import Chart from "chart.js/auto";
+import { ref, defineProps, computed, onMounted } from "vue";
 
 const { items, header, label } = defineProps(["items", "header", "label"]);
-const locItems = computed(() => items);
-const locHeader = computed(() => header);
-const chartData = computed(() => ({
-  labels: locHeader.value,
-  datasets: [
-    {
-      data: locItems.value,
-      backgroundColor: ["#ec6e4c"],
-      label,
-    },
-  ],
-}));
 
-const { barChartProps, barChartRef } = useBarChart({
-  chartData,
+const appChart = ref(null);
+const locLabel = computed(() => label);
+const locHeader = computed(() => header);
+const locItems = computed(() => items);
+
+const datasets = [
+  {
+    label: locLabel.value,
+    data: locItems.value,
+    backgroundColor: ["#49b7e9"],
+    borderColor: "#49b7e9",
+
+    elements: {
+      line: {
+        borderWidth: 2,
+      },
+    },
+  },
+];
+
+onMounted(() => {
+  const ctx = appChart.value;
+  new Chart(ctx, {
+    type: "line",
+    data: {
+      labels: locHeader.value,
+      datasets,
+      borderWidth: 3,
+    },
+  });
 });
 </script>
 

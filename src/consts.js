@@ -40,3 +40,8 @@ export const TITLE_TYPE_LIST = {
     info: "Інформація"
 }
 
+export const LABLEL_CHART = {
+    day: `Графік температури за ${NUMBER_DAYS} днів`,
+    hour: 'Добовий графік температури',
+}
+

@@ -1,3 +1,4 @@
+import axios from "axios";
 import { http } from './http';
 import { NUMBER_DAYS } from "../src/consts";
 const apiKeyWeather = import.meta.env.VITE_API_KEY_WEATHER || ''
@@ -61,5 +62,38 @@ export const apiWeek = async (q) => {
             }
         })
     })
-    
+}
+
+export const apiAllOneDay = async (payload) => {
+    if(!Array.isArray(payload)) return;
+    const urls = payload.map(item => {
+        const { lat, lon } = item.position
+        let url = '/onecall/timemachine?';
+        url +=`lat=${lat}&`;
+        url += `lon=${lon}&`;
+        url += `dt=${curentDate}&`;
+        url += `lang=ua&`;
+        url += `units=metric&`;
+        url += `appid=${apiKeyWeather}`;
+        return url
+    });
+    let items = [];
+    return await axios.all(urls.map((endpoint) => http.get(endpoint))).then(data => {
+        return data.map(d => d.hourly.map((item) => {
+            const description = item.weather[0].description[0].toUpperCase() + item.weather[0].description.slice(1);
+            return {
+                time: new Date(item.dt * 1000).getHours() + ':00',
+                temp: item.temp,
+                feels_like: Math.round(item.feels_like, 1),
+                pressure: item.pressure,
+                humidity: item.humidity,
+                clouds: item.clouds,
+                wind_speed: item.wind_speed,
+                wind_deg: item.wind_deg,
+                wind_gust: item.wind_gust || '',
+                description,
+                icon: item.weather[0].icon,
+            };
+        })) 
+    })
 }

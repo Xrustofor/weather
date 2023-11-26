@@ -1,29 +1,31 @@
 <template>
-  <div class="component">
+  <div class="component" :key="`tabs-${id}`">
     <div class="radio-tabs-wrapper">
       <div class="slot_title">
         <slot name="title"></slot>
       </div>
       <div class="input_wrap">
-        <input
-          type="radio"
-          class="radio-tab"
-          name="radioTab"
-          value="1"
-          id="tab1"
-          checked
-          @click="onClick(CONSTANTS.HOUR)"
-        />
-        <label for="tab1">День</label>
-        <input
-          type="radio"
-          class="radio-tab"
-          name="radioTab"
-          value="7"
-          id="tab2"
-          @click="onClick(CONSTANTS.DAY)"
-        />
-        <label for="tab2">Тиждень</label>
+        <form>
+          <input
+            type="radio"
+            class="radio-tab"
+            name="radioTab"
+            value="1"
+            :id="`${id}-tab1`"
+            checked
+            @click="onClick(CONSTANTS.HOUR)"
+          />
+          <label :for="`${id}-tab1`">День</label>
+          <input
+            type="radio"
+            class="radio-tab"
+            name="radioTab"
+            value="7"
+            :id="`${id}-tab2`"
+            @click="onClick(CONSTANTS.DAY)"
+          />
+          <label :for="`${id}-tab2`">Тиждень</label>
+        </form>
       </div>
     </div>
     <slot></slot>
@@ -34,6 +36,7 @@
 import { defineEmits } from "vue";
 import { CONSTANTS } from "../consts";
 const emit = defineEmits(["selected"]);
+const { id } = defineProps(["id"]);
 const onClick = (item) => {
   emit("selected", item);
 };
@@ -42,6 +45,7 @@ const onClick = (item) => {
 <style lang="scss" scoped>
 .component {
   border-bottom: 1px solid #49b7e9;
+  width: 100%;
 }
 .radio-tabs-wrapper {
   clear: both;

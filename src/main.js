@@ -10,8 +10,8 @@ const app = createApp(App);
 app.use(VueGoogleMaps, {
     load: {
         key: apiKeyGoogle,
-        libraries: "places"
-        // language: 'de',
+        libraries: "places",
+        language: 'ua',
     },
 })
 

@@ -1,6 +1,6 @@
 <template>
   <div class="component">
-    <canvas :height="80" ref="appChart"></canvas>
+    <canvas :height="height || 80" ref="appChart"></canvas>
   </div>
 </template>
 
@@ -8,9 +8,16 @@
 import Chart from "chart.js/auto";
 import { ref, defineProps, computed, onMounted } from "vue";
 
-const { items, header, label } = defineProps(["items", "header", "label"]);
+const { items, header, label, height, update } = defineProps([
+  "items",
+  "header",
+  "label",
+  "height",
+  "update",
+]);
 
 const appChart = ref(null);
+let chart = null;
 const locLabel = computed(() => label);
 const locHeader = computed(() => header);
 const locItems = computed(() => items);
@@ -31,7 +38,7 @@ const datasets = [
 
 onMounted(() => {
   const ctx = appChart.value;
-  new Chart(ctx, {
+  chart = new Chart(ctx, {
     type: "line",
     data: {
       labels: locHeader.value,
@@ -42,4 +49,8 @@ onMounted(() => {
 });
 </script>
 
-<style></style>
+<style lang="scss" scoped>
+.component {
+  width: 100%;
+}
+</style>

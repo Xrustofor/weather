@@ -24,3 +24,18 @@ body {
   margin: 0 auto;
   height: 100%;
 }
+
+button{
+  outline: none;
+  background: #49b7e9;
+  border-radius: 5px;
+  padding: 10px 15px;
+  border: none;
+  color: white;
+  opacity: .7;
+  transition: .2s linear;
+  &:hover{
+    opacity: 1;
+    transition: .2s linear;
+  }
+}

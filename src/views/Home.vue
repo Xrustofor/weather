@@ -10,8 +10,7 @@
         </div>
       </div>
     </div>
-
-    <AppTabs v-if="items.length" @selected="selected">
+    <AppTabs v-if="items.length" :id="geolocation.uuid" @selected="selected">
       <template v-slot:title>
         <h2>{{ city }}</h2>
       </template>

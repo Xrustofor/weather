@@ -67,12 +67,4 @@ tbody tr {
 table {
   background-color: #dbf1fb;
 }
-.wind_deg {
-  // border-radius: 50%;
-  // background: #fff;
-  // overflow: hidden;
-  // width: 15px;
-  // height: 15px;
-  // font-size: 10px;
-}
 </style>

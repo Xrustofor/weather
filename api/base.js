@@ -1,5 +1,5 @@
 import { http } from './http';
-
+import { NUMBER_DAYS } from "../src/consts";
 const apiKeyWeather = import.meta.env.VITE_API_KEY_WEATHER || ''
 
 const curentDate = (new Date(new Date().toDateString()).getTime() / 1000) - (2*60*60);
@@ -39,7 +39,7 @@ export const apiWeek = async (q) => {
         ...q,
         lang: 'ua',
         units: 'metric',
-        dt: 5,
+        dt: NUMBER_DAYS,
         appid: apiKeyWeather
     }
 

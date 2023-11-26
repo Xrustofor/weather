@@ -21,7 +21,6 @@ const datasets = [
     data: locItems.value,
     backgroundColor: ["#49b7e9"],
     borderColor: "#49b7e9",
-
     elements: {
       line: {
         borderWidth: 2,

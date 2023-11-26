@@ -5,7 +5,9 @@
         <div class="wrap">
           <AppAutocompleteCity @selected="setSelectedCity" />
         </div>
-        <div class="wrap"><button>В обране</button></div>
+        <div class="wrap">
+          <button @click="addGeolocation">В обране</button>
+        </div>
       </div>
     </div>
 
@@ -23,23 +25,39 @@
       :header="chartHeader"
       :label="labelChart"
     />
+    <Teleport to="body">
+      <AppModalWindow
+        v-if="showModal"
+        :show="showModal"
+        @close="closeModal"
+        :type="type"
+        :time="timeMessage"
+        :message="message"
+      >
+        {{ message }}
+      </AppModalWindow>
+    </Teleport>
   </div>
 </template>
 
 <script setup>
-import { ref, computed, onMounted } from "vue";
+import { ref, computed } from "vue";
 import { useStore } from "vuex";
 import AppAutocompleteCity from "@/components/AppAutocompleteCity.vue";
 import AppTable from "@/components/AppTable.vue";
 import AppChart from "@/components/AppChart.vue";
 import AppTabs from "../components/AppTabs.vue";
-import { CONSTANTS } from "../consts";
+import AppModalWindow from "@/components/AppModalWindow.vue";
+import { CONSTANTS, TYPE } from "../consts";
 
 const chartKey = ref(new Date().getTime());
 const store = useStore();
 const city = ref("");
 const type = ref(CONSTANTS.HOUR);
 const labelChart = ref("");
+const showModal = ref(false);
+const message = ref("");
+const timeMessage = ref(null);
 
 store.dispatch("saveCurentLocation");
 
@@ -86,6 +104,19 @@ async function getData(item) {
     chartKey.value = new Date().getTime();
   }
 }
+
+const addGeolocation = async () => {
+  const location = geolocation.value;
+  const result = await store.dispatch("saveGeolocation", location);
+  showModal.value = true;
+  type.value = result.type;
+  message.value = result.message;
+  timeMessage.value = result.time;
+};
+
+const closeModal = (payload) => {
+  showModal.value = payload;
+};
 </script>
 <style lang="scss" scoped>
 .page {

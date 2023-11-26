@@ -1,7 +1,14 @@
 import { createStore } from 'vuex';
 import  { apiOneDay, apiWeek } from '../../api/base';
+import { LSGeolocation } from "../scripts/index"
+const lSgeolocation = new LSGeolocation();
+import { NUMBER_CITIES, TYPE, SHOW_TIME } from "../consts";
+import {chosen} from "./chosen"
 
 const store = createStore({
+    modules:{
+        chosen
+    },
     state() {
         return {
             items: [],
@@ -31,9 +38,8 @@ const store = createStore({
         setWeek(state, payload){ state.items = payload },
         setCurentLocation(state, payload) {
             if(!payload?.position) return;
-            const { position, city } = payload;
-            state.geolocation = {position, city};
-            const json = JSON.stringify({position, city})
+            state.geolocation = payload;
+            const json = JSON.stringify(payload)
             localStorage.setItem("geolocation", json)
         },
 
@@ -66,6 +72,54 @@ const store = createStore({
             const json = JSON.parse(str)
             commit('setCurentLocation', json)
             return json
+        },
+        
+        saveGeolocation({}, payload){
+            const data = {
+                type: TYPE.INFO,
+                message: "",
+                time: SHOW_TIME,
+            };
+
+            if(payload === null){
+                data.type = TYPE.ERROR;
+                data.message = `Спочатку виберіть місто`;
+                return data
+            }
+            
+            const countCities = lSgeolocation.length;
+
+            if(countCities >= NUMBER_CITIES){
+                data.type = TYPE.ERROR;
+                data.message = `Ви не можете в обране добавити більше ${countCities} міст`;
+                return data;
+            }
+
+            const islocations = lSgeolocation.isEl(payload);
+
+            switch(islocations){
+                case null: {
+                    const result = lSgeolocation.save(payload);
+                      if(result){
+                        data.type = TYPE.SUCCESSES;
+                        data.message = `${payload.city} добавлена в обране`;
+                        return data;
+                    }
+                }
+                case true: {
+                    data.type = TYPE.WARNING;
+                    data.message = `Місто ${payload.city} вже добавлений в обраное`;
+                    return data;
+                }
+                case false: {
+                    const result = lSgeolocation.save(payload);
+                    if(result){
+                        data.type = TYPE.SUCCESSES;
+                        data.message = `${payload.city} добавлена в обране`;
+                        return data;
+                    }
+                }
+            }
         },
 
         getCurrentGeolocation({commit}){
@@ -107,6 +161,8 @@ const store = createStore({
         
     },
 })
+
+
 
 
 export default store

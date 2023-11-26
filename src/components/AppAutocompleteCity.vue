@@ -16,6 +16,7 @@ const emit = defineEmits(["selected"]);
 const city = ref("");
 const setPlace = (e) => {
   const data = {
+    uuid: e.place_id,
     city: e.name,
     position: {
       lat: e.geometry.location.lat(),

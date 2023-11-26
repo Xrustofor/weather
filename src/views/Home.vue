@@ -36,6 +36,9 @@
         {{ message }}
       </AppModalWindow>
     </Teleport>
+    <Teleport to="body" v-if="loading">
+      <AppLoading />
+    </Teleport>
   </div>
 </template>
 
@@ -47,6 +50,7 @@ import AppTable from "@/components/AppTable.vue";
 import AppChart from "@/components/AppChart.vue";
 import AppTabs from "@/components/AppTabs.vue";
 import AppModalWindow from "@/components/AppModalWindow.vue";
+import AppLoading from "@/components/AppLoading.vue";
 import { CONSTANTS } from "../consts";
 
 const chartKey = ref(new Date().getTime());
@@ -68,11 +72,14 @@ if (geolocation.value) {
 
 const header = computed(() => store.getters.getHeader);
 const items = computed(() => store.getters.getItems);
+const loading = computed(() => store.getters.getLoading);
 const chartItems = computed(() => items.value.map((item) => `${item.temp}`));
 const chartHeader = computed(() => items.value.map((item) => item.time));
 
 const setSelectedCity = async (item) => {
+  store.commit("setLoading", true);
   await store.commit("setCurentLocation", item);
+  store.commit("setLoading", false);
   city.value = item.city;
   getData(item);
 };
@@ -84,6 +91,7 @@ const selected = (item) => {
 };
 
 async function getData(item) {
+  store.commit("setLoading", true);
   switch (type.value) {
     case CONSTANTS.HOUR: {
       await store.dispatch("getOneDay", geolocation.value || item);
@@ -98,10 +106,10 @@ async function getData(item) {
       break;
     }
   }
-
-  function updateChart() {
-    chartKey.value = new Date().getTime();
-  }
+  store.commit("setLoading", false);
+}
+function updateChart() {
+  chartKey.value = new Date().getTime();
 }
 
 const addGeolocation = async () => {

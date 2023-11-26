@@ -1,5 +1,5 @@
 import axios from "axios";
-import { http } from './http';
+import http from './http';
 import { NUMBER_DAYS } from "../src/consts";
 const apiKeyWeather = import.meta.env.VITE_API_KEY_WEATHER || ''
 

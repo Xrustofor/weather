@@ -11,6 +11,7 @@ const store = createStore({
     },
     state() {
         return {
+            loading: false,
             items: [],
             geolocation: null,
             header: [
@@ -32,8 +33,10 @@ const store = createStore({
         getweekItems: state => state.weekItems,
         getHeader: state => state.header,
         getStoreGeolocation: state => state.geolocation,
+        getLoading: state => state.loading,
     },
     mutations:{
+        setLoading: (state, payload) => { state.loading = payload },
         setOneData(state, payload){ state.items = payload },
         setWeek(state, payload){ state.items = payload },
         setCurentLocation(state, payload) {

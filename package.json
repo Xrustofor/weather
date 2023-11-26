@@ -9,13 +9,15 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@ctechhindi/vue3-progress-bar": "^1.0.5",
     "@fawmi/vue-google-maps": "^0.9.79",
     "axios": "^1.6.2",
     "chart.js": "^3.9.1",
     "lodash": "^4.17.21",
     "vue": "^3.3.8",
-    "vue-multiselect": "^3.0.0-beta.3",
+    "vue-axios": "^3.5.2",
     "vue-router": "^4.0.13",
+    "vue3-progress": "^0.0.1-beta4",
     "vuex": "^4.0.2"
   },
   "devDependencies": {

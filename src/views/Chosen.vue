@@ -53,6 +53,9 @@
         </template>
       </AppModalWindow>
     </Teleport>
+    <Teleport to="body" v-if="loading">
+      <AppLoading />
+    </Teleport>
   </div>
   <div v-else class="empty_wrap">
     <div class="empty">
@@ -61,20 +64,28 @@
   </div>
 </template>
 <script setup>
-import { computed, ref } from "vue";
+import { computed, ref, onMounted } from "vue";
 import { useStore } from "vuex";
 import AppTable from "@/components/AppTable.vue";
 import AppTabs from "@/components/AppTabs.vue";
 import AppChart from "@/components/AppChart.vue";
-import { CONSTANTS, LABLEL_CHART, TYPE } from "@/consts";
 import AppModalWindow from "@/components/AppModalWindow.vue";
+import AppLoading from "@/components/AppLoading.vue";
+import { CONSTANTS, LABLEL_CHART, TYPE } from "@/consts";
 
 const store = useStore();
+
+onMounted(async () => {
+  store.commit("setLoading", true);
+  await store.dispatch("chosen/getAllOneDay", geolocations.value);
+  store.commit("setLoading", false);
+});
+
 store.commit("chosen/setGeolocations");
 const geolocations = computed(() => store.getters["chosen/getGeolocations"]);
-store.dispatch("chosen/getAllOneDay", geolocations.value);
-const header = computed(() => store.getters.getHeader);
 
+const header = computed(() => store.getters.getHeader);
+const loading = computed(() => store.getters.getLoading);
 const items = computed(() => store.getters["chosen/getItems"]);
 const showModal = ref(false);
 const message = ref("");
@@ -82,6 +93,7 @@ const uuid = ref("");
 
 const selected = async (item) => {
   const { key } = item;
+  store.commit("setLoading", true);
   switch (key) {
     case CONSTANTS.DAY: {
       await store.dispatch("chosen/getWeekChosen", item);
@@ -92,6 +104,7 @@ const selected = async (item) => {
       break;
     }
   }
+  store.commit("setLoading", false);
 };
 
 const remove = (id, city) => {

@@ -39,3 +39,8 @@ button{
     transition: .2s linear;
   }
 }
+
+button.successes{
+  background: #ebc8c4;
+  color: #c64858;
+}

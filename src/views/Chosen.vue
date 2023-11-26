@@ -26,9 +26,26 @@
         </div>
       </div>
       <div class="footer">
-        <button>Видалити</button>
+        <button @click="remove(data.uuid, data.city)">Видалити</button>
       </div>
     </div>
+    <Teleport to="body">
+      <AppModalWindow
+        v-if="showModal"
+        :show="showModal"
+        @close="closeModal"
+        :type="TYPE.WARNING"
+        :message="message"
+      >
+        {{ message }}
+        <template v-slot:footer>
+          <div class="modal_buttons">
+            <button @click="showModal = false">Ні</button>
+            <button class="successes" @click="removed(data.uuid)">Так</button>
+          </div>
+        </template>
+      </AppModalWindow>
+    </Teleport>
   </div>
 </template>
 <script setup>
@@ -37,14 +54,19 @@ import { useStore } from "vuex";
 import AppTable from "@/components/AppTable.vue";
 import AppTabs from "@/components/AppTabs.vue";
 import AppChart from "@/components/AppChart.vue";
-import { CONSTANTS, LABLEL_CHART } from "../consts";
+import { CONSTANTS, LABLEL_CHART, TYPE } from "@/consts";
+import AppModalWindow from "@/components/AppModalWindow.vue";
 
 const store = useStore();
 store.commit("chosen/setGeolocations");
 const geolocations = computed(() => store.getters["chosen/getGeolocations"]);
-const items = computed(() => store.getters["chosen/getItems"]);
 store.dispatch("chosen/getAllOneDay", geolocations.value);
 const header = computed(() => store.getters.getHeader);
+
+const items = computed(() => store.getters["chosen/getItems"]);
+const showModal = ref(false);
+const message = ref("");
+const uuid = ref("");
 
 const selected = async (item) => {
   const { key } = item;
@@ -58,7 +80,20 @@ const selected = async (item) => {
       break;
     }
   }
-  console.log(item);
+};
+
+const remove = (uuid, city) => {
+  showModal.value = true;
+  message.value = `Ви дійсно хочете видалити місто ${city} із списку обраних ?`;
+  uuid.value = uuid;
+};
+
+const removed = (uuid) => {
+  console.log(uuid);
+};
+
+const closeModal = () => {
+  showModal.value = false;
 };
 </script>
 <style lang="scss" scoped>
@@ -87,8 +122,14 @@ const selected = async (item) => {
   .footer {
     margin-top: 15px;
     text-align: right;
-    button {
-    }
+  }
+}
+.modal_buttons {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 15px;
+  button {
+    min-width: 100px;
   }
 }
 </style>

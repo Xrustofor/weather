@@ -44,15 +44,23 @@ const { show, type, time, message } = defineProps([
 const emit = defineEmits(["close"]);
 const timeLocal = ref(time);
 let idTimeInterval = null;
-if (timeLocal.value !== 0) {
-  idTimeInterval = setInterval(() => {
-    if (timeLocal.value) {
-      timeLocal.value--;
-    } else {
-      clearInterval(idTimeInterval);
-      emit("close", false);
+
+switch (timeLocal.value) {
+  case undefined: {
+    break;
+  }
+  default: {
+    if (timeLocal.value !== 0) {
+      idTimeInterval = setInterval(() => {
+        if (timeLocal.value) {
+          timeLocal.value--;
+        } else {
+          clearInterval(idTimeInterval);
+          emit("close", false);
+        }
+      }, 1000);
     }
-  }, 1000);
+  }
 }
 
 const close = () => {
@@ -111,6 +119,7 @@ onDeactivated(() => {
   justify-content: center;
   font-size: 20px;
   text-align: center;
+  min-height: 100px;
 }
 .header {
   font-size: 20px;

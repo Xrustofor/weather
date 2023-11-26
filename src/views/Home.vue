@@ -45,9 +45,9 @@ import { useStore } from "vuex";
 import AppAutocompleteCity from "@/components/AppAutocompleteCity.vue";
 import AppTable from "@/components/AppTable.vue";
 import AppChart from "@/components/AppChart.vue";
-import AppTabs from "../components/AppTabs.vue";
+import AppTabs from "@/components/AppTabs.vue";
 import AppModalWindow from "@/components/AppModalWindow.vue";
-import { CONSTANTS, TYPE } from "../consts";
+import { CONSTANTS } from "../consts";
 
 const chartKey = ref(new Date().getTime());
 const store = useStore();

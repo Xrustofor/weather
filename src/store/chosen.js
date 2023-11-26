@@ -26,7 +26,9 @@ export const chosen = {
                 }
                 return item
             })
-        }
+        },
+        removeCityItems: ( state, uuid ) => state.items = state.items.filter(item => item.uuid !== uuid),
+        
     },
     
     actions: { 
@@ -71,6 +73,14 @@ export const chosen = {
                 commit('updateAllItems', {items,  uuid, chartKey, typeView: CONSTANTS.HOUR })
             }catch(e){
                 console.log(e)
+            }
+        },
+        removeCity({commit}, uuid){
+            const resulet = lSgeolocation.delete(uuid);
+            if(resulet){
+                commit('setGeolocations');
+                commit('removeCityItems', uuid);
+                return true;
             }
         }
     },

@@ -1,5 +1,5 @@
 <template>
-  <div class="page">
+  <div class="page" v-if="geolocations.length">
     <div v-for="data of items" :key="data.uuid" class="card_wrap">
       <div class="card">
         <div class="column">
@@ -40,12 +40,24 @@
         {{ message }}
         <template v-slot:footer>
           <div class="modal_buttons">
-            <button @click="showModal = false">Ні</button>
-            <button class="successes" @click="removed(data.uuid)">Так</button>
+            <button
+              @click="
+                showModal = false;
+                uuid = null;
+              "
+            >
+              Ні
+            </button>
+            <button class="successes" @click="removed">Так</button>
           </div>
         </template>
       </AppModalWindow>
     </Teleport>
+  </div>
+  <div v-else class="empty_wrap">
+    <div class="empty">
+      <p>Ви не добавили жодного міста в обране.</p>
+    </div>
   </div>
 </template>
 <script setup>
@@ -82,14 +94,16 @@ const selected = async (item) => {
   }
 };
 
-const remove = (uuid, city) => {
+const remove = (id, city) => {
   showModal.value = true;
   message.value = `Ви дійсно хочете видалити місто ${city} із списку обраних ?`;
-  uuid.value = uuid;
+  uuid.value = id;
 };
 
-const removed = (uuid) => {
-  console.log(uuid);
+const removed = () => {
+  store.dispatch("chosen/removeCity", uuid.value);
+  showModal.value = false;
+  uuid.value = "";
 };
 
 const closeModal = () => {
@@ -130,6 +144,23 @@ const closeModal = () => {
   margin-bottom: 15px;
   button {
     min-width: 100px;
+  }
+}
+
+.empty_wrap {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  .empty {
+    max-width: 300px;
+    width: 100%;
+    p {
+      text-align: center;
+      font-size: 25px;
+      line-height: 35px;
+    }
   }
 }
 </style>

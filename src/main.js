@@ -6,7 +6,6 @@ import App from './App.vue';
 import router from './router/';
 import store from './store';
 import VueGoogleMaps, {} from '@fawmi/vue-google-maps';
-import Vue3ProgressBar from "@ctechhindi/vue3-progress-bar";
 
 
 
@@ -19,15 +18,6 @@ app.use(VueGoogleMaps, {
         libraries: "places",
         language: 'ua',
     },
-})
-
-app.use(Vue3ProgressBar, {
-    height: "2px",
-  customStyle: {
-    width: "100 %",
-    position: "absolute",
-    background: "#f8f3d6",
-  },
 })
 
 app.use(store);

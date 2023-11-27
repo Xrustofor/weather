@@ -30,7 +30,7 @@
   display: flex;
   justify-content: center !important;
   align-items: center;
-  background: rgba(255, 266, 255, 0.4);
+  background: rgba(255, 266, 255, 0.2);
 }
 
 .lds-spinner {

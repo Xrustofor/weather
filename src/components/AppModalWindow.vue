@@ -113,7 +113,7 @@ onDeactivated(() => {
 .body {
   display: flex;
   flex: 1;
-  padding: 15px 0;
+  padding: 15px;
   align-content: center;
   align-items: center;
   justify-content: center;

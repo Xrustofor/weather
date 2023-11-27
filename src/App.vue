@@ -1,6 +1,5 @@
 <template>
   <div class="app">
-    <Vue3ProgressBar />
     <img
       class="fit-picture"
       src="./assets/weather.svg"

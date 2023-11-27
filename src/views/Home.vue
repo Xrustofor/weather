@@ -189,13 +189,16 @@ const closeModal = (payload) => {
 .warning {
   border-radius: 5px;
   box-shadow: 0px 0px 10px #7aa4b7;
-  animation: blink 1s infinite;
+  animation: blink 1.3s infinite;
 
   @keyframes blink {
     0% {
       box-shadow: none;
     }
-    50% {
+    30% {
+      box-shadow: 0px 0px 10px #7aa4b7;
+    }
+    70% {
       box-shadow: 0px 0px 10px #7aa4b7;
     }
     100% {

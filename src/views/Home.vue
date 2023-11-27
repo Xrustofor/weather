@@ -2,7 +2,7 @@
   <div class="page">
     <div class="input_button_wrap">
       <div class="input_button">
-        <div class="wrap">
+        <div class="wrap" :class="items.length || 'warning'">
           <AppAutocompleteCity @selected="setSelectedCity" />
         </div>
         <div class="wrap">
@@ -10,20 +10,24 @@
         </div>
       </div>
     </div>
-    <AppTabs v-if="items.length" :id="geolocation.uuid" @selected="selected">
-      <template v-slot:title>
-        <h2>{{ city }}</h2>
-      </template>
-      <AppTable :items="items" :header="header" />
-    </AppTabs>
+    <template v-if="items.length">
+      <AppTabs :id="geolocation.uuid" @selected="selected">
+        <template v-slot:title>
+          <h2>{{ city }}</h2>
+        </template>
+        <AppTable :items="items" :header="header" />
+      </AppTabs>
 
-    <AppChart
-      :key="chartKey"
-      v-if="chartItems.length"
-      :items="chartItems"
-      :header="chartHeader"
-      :label="labelChart"
-    />
+      <AppChart
+        :key="chartKey"
+        v-if="chartItems.length"
+        :items="chartItems"
+        :header="chartHeader"
+        :label="labelChart"
+      />
+    </template>
+    <AppInfo v-else text="У вас не вибране жодного міста."></AppInfo>
+
     <Teleport to="body">
       <AppModalWindow
         v-if="showModal"
@@ -51,6 +55,7 @@ import AppChart from "@/components/AppChart.vue";
 import AppTabs from "@/components/AppTabs.vue";
 import AppModalWindow from "@/components/AppModalWindow.vue";
 import AppLoading from "@/components/AppLoading.vue";
+import AppInfo from "@/components/AppInfo.vue";
 import { CONSTANTS } from "../consts";
 
 const chartKey = ref(new Date().getTime());
@@ -177,6 +182,24 @@ const closeModal = (payload) => {
         transition: 0.3s linear opacity;
         opacity: 1;
       }
+    }
+  }
+}
+
+.warning {
+  border-radius: 5px;
+  box-shadow: 0px 0px 10px #7aa4b7;
+  animation: blink 1s infinite;
+
+  @keyframes blink {
+    0% {
+      box-shadow: none;
+    }
+    50% {
+      box-shadow: 0px 0px 10px #7aa4b7;
+    }
+    100% {
+      box-shadow: none;
     }
   }
 }

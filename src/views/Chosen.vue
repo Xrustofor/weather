@@ -57,11 +57,7 @@
       <AppLoading />
     </Teleport>
   </div>
-  <div v-else class="empty_wrap">
-    <div class="empty">
-      <p>Ви не добавили жодного міста в обране.</p>
-    </div>
-  </div>
+  <AppInfo v-else text="Ви не добавили жодного міста в обране."></AppInfo>
 </template>
 <script setup>
 import { computed, ref, onMounted } from "vue";
@@ -71,6 +67,7 @@ import AppTabs from "@/components/AppTabs.vue";
 import AppChart from "@/components/AppChart.vue";
 import AppModalWindow from "@/components/AppModalWindow.vue";
 import AppLoading from "@/components/AppLoading.vue";
+import AppInfo from "@/components/AppInfo.vue";
 import { CONSTANTS, LABLEL_CHART, TYPE } from "@/consts";
 
 const store = useStore();
@@ -157,23 +154,6 @@ const closeModal = () => {
   margin-bottom: 15px;
   button {
     min-width: 100px;
-  }
-}
-
-.empty_wrap {
-  width: 100%;
-  height: 100%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  .empty {
-    max-width: 300px;
-    width: 100%;
-    p {
-      text-align: center;
-      font-size: 25px;
-      line-height: 35px;
-    }
   }
 }
 </style>

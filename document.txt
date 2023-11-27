@@ -1,0 +1,3 @@
+heroku:
+https://enigmatic-cove-64225-27c9877eb484.herokuapp.com/
+https://git.heroku.com/enigmatic-cove-64225.git

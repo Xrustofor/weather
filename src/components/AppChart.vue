@@ -52,5 +52,6 @@ onMounted(() => {
 <style lang="scss" scoped>
 .component {
   width: 100%;
+  min-height: 350px;
 }
 </style>

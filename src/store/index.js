@@ -1,21 +1,27 @@
 import { createStore } from 'vuex';
-import  { oneDay, fetchCitys } from '../../api/base';
+import  { apiOneDay, apiWeek, fetchCitys } from '../../api/base';
+import { LSGeolocation } from "../scripts/index"
+const lSgeolocation = new LSGeolocation();
+import { NUMBER_CITIES, TYPE, SHOW_TIME } from "../consts";
+import {chosen} from "./chosen"
 
 const store = createStore({
+    modules:{
+        chosen
+    },
     state() {
         return {
+            loading: false,
             items: [],
             citys: [],
             geolocation: null,
-            loading: false,
             header: [
-                { key: "hour", value: "Година" },
+                { key: "time", value: "Година/День" },
                 { key: "icon", value: "" },
                 { key: "temp", value: "Температура" },
                 { key: "feels_like", value: "Відчувається як" },
                 { key: "pressure", value: "Тиск" },
                 { key: "humidity", value: "Вологість" },
-                { key: "dew_point", value: "Точка роси" },
                 { key: "clouds", value: "Хмари" },
                 { key: "wind_speed", value: "Швидкість вітру м/c" },
                 { key: "wind_deg", value: "Напрямок вітру" },
@@ -24,58 +30,139 @@ const store = createStore({
         }
     },
     getters:{
-        getLoading: state => state.loading,
-        citys: state => state.citys,
         getItems: state => state.items,
+        citys: state => state.citys,
+        getweekItems: state => state.weekItems,
         getHeader: state => state.header,
         getStoreGeolocation: state => state.geolocation,
-        getLocalGeolocation: () => {
-            const json = localStorage.getItem('geolocation');
-            return JSON.parse(json);
-        },
+        getLoading: state => state.loading,
     },
     mutations:{
-        setLoading(store, payload){ store.loading = !!payload },
+        setLoading: (state, payload) => { state.loading = payload },
         setCitys( store, payload ){ store.citys = payload },
-        setOneData(store, payload){ store.items = payload },
+        setOneData(state, payload){ state.items = payload },
+        setWeek(state, payload){ state.items = payload },
         setCurentLocation(state, payload) {
             if(!payload?.position) return;
-            const { position, city } = payload;
-            state.geolocation = {position, city};
-            const json = JSON.stringify({position, city})
-            localStorage.setItem("geolocation", json);
+            state.geolocation = payload;
+            const json = JSON.stringify(payload)
+            localStorage.setItem("geolocation", json)
         },
+
     },
     actions:{
         async getOneDay({ commit }, payload){
             const { lat, lon } = payload.position;
-            commit('setCurentLocation', payload)
             try{
-               const result = await oneDay({lat, lon});
+               const result = await apiOneDay({lat, lon});
                commit('setOneData', result);
              } catch(e){
                 console.log(e)
              }
             
         },
+
+        async getWeek({ commit }, payload){
+            const { lat, lon } = payload.position;
+            try{
+                const result = await apiWeek({ lat, lon })
+                commit('setWeek', result)
+            }catch(e){
+                console.log(e)
+            }
+        },
+
+        saveCurentLocation({commit}){
+            const str = localStorage.getItem('geolocation');
+            if(!str) return;
+            const json = JSON.parse(str)
+            commit('setCurentLocation', json)
+            return json
+        },
+        
+        saveGeolocation({}, payload){
+            const data = {
+                type: TYPE.INFO,
+                message: "",
+                time: SHOW_TIME,
+            };
+
+            if(payload === null){
+                data.type = TYPE.ERROR;
+                data.message = `Спочатку виберіть місто`;
+                return data
+            }
+            
+            const countCities = lSgeolocation.length;
+
+            if(countCities >= NUMBER_CITIES){
+                data.type = TYPE.ERROR;
+                data.message = `Ви не можете в обране добавити більше ${countCities} міст`;
+                return data;
+            }
+
+            const islocations = lSgeolocation.isEl(payload);
+
+            switch(islocations){
+                case null: {
+                    const result = lSgeolocation.save(payload);
+                      if(result){
+                        data.type = TYPE.SUCCESSES;
+                        data.message = `${payload.city} добавлена в обране`;
+                        return data;
+                    }
+                }
+                case true: {
+                    data.type = TYPE.WARNING;
+                    data.message = `Місто ${payload.city} вже добавлений в обраное`;
+                    return data;
+                }
+                case false: {
+                    const result = lSgeolocation.save(payload);
+                    if(result){
+                        data.type = TYPE.SUCCESSES;
+                        data.message = `${payload.city} добавлена в обране`;
+                        return data;
+                    }
+                }
+            }
+        },
+
         getCurrentGeolocation({commit}){
             const data = {
                 cod: null,
                 city: '',
             }
-            if(!navigator.geolocation){
-                data.cod = 200,
-                data.message = "Geolocation is not supported by this browser."
-                commit('setCurentLocation', data)
-            }
-            navigator.geolocation.getCurrentPosition((position) => {
+
+            const options = {
+                enableHighAccuracy: true,
+                timeout: 5000,
+                maximumAge: 0,
+              };
+              
+              const success = pos => {
+                const crd = pos.coords;
+                const {latitude, longitude, accuracy} = crd;
+                data.message = `More or less ${accuracy} meters.`;
                 data.cod = 200,
                 data.position = {
-                    lat: position.coords.latitude,
-                    lon: position.coords.longitude
+                    lat: latitude,
+                    lon: longitude
                 }
-                commit('setCurentLocation', data)
-            });
+                commit('setCurentLocation', data);
+              }
+              
+              const error = err => {
+                console.warn(`ERROR(${err.code}): ${err.message}`);
+                data.cod = err.code;
+                data.message = err.message;
+                console.log(err)
+                commit('setCurentLocation', data);
+              }
+              
+              navigator.geolocation.getCurrentPosition(success, error, options);
+
+              return data;
         },
 
         async getCitys({commit}, text){
@@ -90,9 +177,12 @@ const store = createStore({
                 console.log(e);
                 commit('setLoading', false);
             }
-        }        
+        }
+        
     },
 })
+
+
 
 
 export default store

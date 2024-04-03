@@ -50,5 +50,9 @@ const select = () => {
 <style lang="scss">
 .g_map_autocomplete {
   position: relative;
+  width: 100%;
+  input {
+    width: 100%;
+  }
 }
 </style>

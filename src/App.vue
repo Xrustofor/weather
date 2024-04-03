@@ -22,6 +22,7 @@ import AppNavigation from "./components/AppNavigation.vue";
   height: 100%;
   display: flex;
   flex-direction: column;
+  position: relative;
 }
 
 main {

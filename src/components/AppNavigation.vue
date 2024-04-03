@@ -11,11 +11,6 @@
           Обране
         </li>
       </router-link>
-      <router-link to="/places" custom v-slot="{ navigate, isActive }">
-        <li @click="navigate" role="link" :class="[isActive && 'active']">
-          Places
-        </li>
-      </router-link>
     </ul>
   </nav>
 </template>

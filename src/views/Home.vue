@@ -3,7 +3,13 @@
     <div class="input_button_wrap">
       <div class="input_button">
         <div class="wrap" :class="items.length || 'warning'">
-          <AppAutocompleteCity @selected="setSelectedCity" />
+          <!-- <AppAutocompleteCity @selected="setSelectedCity" /> -->
+          <AppAutocompleteCity
+            :loading="loading"
+            :items="citys"
+            @onEnterText="onEnterText"
+            @selected="setSelectedCity"
+          />
         </div>
         <div class="wrap">
           <button @click="addGeolocation">В обране</button>
@@ -78,8 +84,13 @@ if (geolocation.value) {
 const header = computed(() => store.getters.getHeader);
 const items = computed(() => store.getters.getItems);
 const loading = computed(() => store.getters.getLoading);
+const citys = computed(() => store.getters.citys);
 const chartItems = computed(() => items.value.map((item) => `${item.temp}`));
 const chartHeader = computed(() => items.value.map((item) => item.time));
+
+const onEnterText = (text) => {
+  store.dispatch("getCitys", text);
+};
 
 const setSelectedCity = async (item) => {
   store.commit("setLoading", true);

@@ -1,26 +1,46 @@
 <template>
   <div class="g_map_autocomplete">
-    <GMapAutocomplete
-      placeholder="Виберіть ваше місто."
-      @place_changed="setPlace"
+    <multiselect
       v-model="city"
-      :options="{}"
+      label="name"
+      placeholder="Enter the name of the city"
+      :options="items"
+      :loading="loading"
+      :options-limit="300"
+      :limit="limit"
+      :limit-text="limitText"
+      :max-height="600"
+      @search-change="asyncFind"
+      @select="select"
     />
   </div>
-  <pre>{{ city }}</pre>
 </template>
 
 <script setup>
-import { ref } from "vue";
-const emit = defineEmits(["selected"]);
+import { ref, defineProps, computed } from "vue";
+import Multiselect from "vue-multiselect";
+
+const emit = defineEmits(["selected", "onEnterText"]);
 const city = ref("");
-const setPlace = (e) => {
+
+const limit = 3;
+
+const { items, loading } = defineProps(["items", "loading"]);
+
+const limitText = (count) => `and ${count} other countries`;
+const asyncFind = async (text) => {
+  if (text.length < limit) return;
+  emit("onEnterText", text);
+};
+
+const select = () => {
+  if (!city.value) return;
+  const { name, latitude, longitude } = city.value;
   const data = {
-    uuid: e.place_id,
-    city: e.name,
+    city: name,
     position: {
-      lat: e.geometry.location.lat(),
-      lon: e.geometry.location.lng(),
+      lat: latitude,
+      lon: longitude,
     },
   };
   emit("selected", data);
@@ -32,9 +52,6 @@ const setPlace = (e) => {
   position: relative;
   width: 100%;
   input {
-    padding: 8px 30px 8px 15px;
-    border-radius: 5px;
-    border: 1px solid #ccc;
     width: 100%;
   }
 }

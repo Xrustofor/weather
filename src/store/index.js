@@ -1,5 +1,5 @@
 import { createStore } from 'vuex';
-import  { apiOneDay, apiWeek } from '../../api/base';
+import  { apiOneDay, apiWeek, fetchCitys } from '../../api/base';
 import { LSGeolocation } from "../scripts/index"
 const lSgeolocation = new LSGeolocation();
 import { NUMBER_CITIES, TYPE, SHOW_TIME } from "../consts";
@@ -13,6 +13,7 @@ const store = createStore({
         return {
             loading: false,
             items: [],
+            citys: [],
             geolocation: null,
             header: [
                 { key: "time", value: "Година/День" },
@@ -30,6 +31,7 @@ const store = createStore({
     },
     getters:{
         getItems: state => state.items,
+        citys: state => state.citys,
         getweekItems: state => state.weekItems,
         getHeader: state => state.header,
         getStoreGeolocation: state => state.geolocation,
@@ -37,6 +39,7 @@ const store = createStore({
     },
     mutations:{
         setLoading: (state, payload) => { state.loading = payload },
+        setCitys( store, payload ){ store.citys = payload },
         setOneData(state, payload){ state.items = payload },
         setWeek(state, payload){ state.items = payload },
         setCurentLocation(state, payload) {
@@ -161,6 +164,20 @@ const store = createStore({
 
               return data;
         },
+
+        async getCitys({commit}, text){
+            if(!text) return;
+            commit('setCitys', []);
+            try{
+                commit('setLoading', true);
+                const result = await fetchCitys(text)
+                commit('setLoading', false);
+                commit('setCitys', result);
+            }catch(e){
+                console.log(e);
+                commit('setLoading', false);
+            }
+        }
         
     },
 })

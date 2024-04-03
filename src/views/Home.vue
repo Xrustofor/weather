@@ -1,6 +1,11 @@
 <template>
   <div class="wrap">
-    <AppAutocompleteCity @selected="setSelectedCity" />
+    <AppAutocompleteCity
+      :loading="loading"
+      :items="citys"
+      @selected="setSelectedCity"
+      @onEnterText="onEnterText"
+    />
     <AppTable :items="items" :header="header" />
     <AppChart
       :key="chartKey"
@@ -21,18 +26,25 @@ import AppChart from "../components/AppChart.vue";
 const chartKey = ref(new Date().getTime());
 
 const store = useStore();
-store.dispatch("getCurrentGeolocation");
+// store.dispatch("getCurrentGeolocation");
 
 const geolocation = computed(() => store.getters.getLocalGeolocation);
 if (geolocation) {
-  store.dispatch("getOneDay", geolocation.value);
+  // store.dispatch("getOneDay", geolocation.value);
 }
 const header = computed(() => store.getters.getHeader);
 const items = computed(() => store.getters.getItems);
+const loading = computed(() => store.getters.getLoading);
+const citys = computed(() => store.getters.citys);
+
 const chartItems = computed(() => items.value.map((item) => item.temp));
 const chartHeader = computed(() =>
   items.value.map((item) => item.hour + ":00")
 );
+
+const onEnterText = (text) => {
+  store.dispatch("getCitys", text);
+};
 
 const setSelectedCity = (item) => {
   store.dispatch("getOneDay", item);

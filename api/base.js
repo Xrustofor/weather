@@ -1,4 +1,5 @@
 import { http } from './http';
+import axios from 'axios';
 
 const apiKeyWeather = import.meta.env.VITE_API_KEY_WEATHER || ''
 
@@ -34,3 +35,21 @@ export const oneDay = async (q) => {
     })
     
 }
+
+
+const options = {
+    method: 'GET',
+    url: 'https://api.api-ninjas.com/v1/city',
+    params: {
+        name: 'Vinn',
+        limit: '25'
+    },
+    headers: {
+        'X-Api-Key': 'yz/xPn9O34dk19wl5r5mRQ==W4jnOQbGRdFHKcKz'
+    }
+}
+export const fetchCitys = async (text) => {
+    options.params.name = text;
+    return http.request(options);
+}
+

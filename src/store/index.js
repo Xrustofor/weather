@@ -170,7 +170,7 @@ const store = createStore({
             commit('setCitys', []);
             try{
                 commit('setLoading', true);
-                const result = await fetchCitys(text)
+                const result = await fetchCitys(text);
                 commit('setLoading', false);
                 commit('setCitys', result);
             }catch(e){

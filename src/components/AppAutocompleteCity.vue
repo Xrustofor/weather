@@ -35,9 +35,10 @@ const asyncFind = async (text) => {
 
 const select = () => {
   if (!city.value) return;
-  const { name, latitude, longitude } = city.value;
+  const { name, latitude, longitude, population } = city.value;
   const data = {
     city: name,
+    uuid: `${name}-${population}`,
     position: {
       lat: latitude,
       lon: longitude,

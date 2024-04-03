@@ -92,7 +92,6 @@ export default {
     });
 
     function shuffleData() {
-      console.log("shuffleData");
       data.value = shuffle(data.value);
     }
 
